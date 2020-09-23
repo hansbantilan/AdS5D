@@ -15,6 +15,7 @@ c              (_res, _rhs unused)
 
 c-----------------------------------------------------------------------      
         subroutine mg_sup(action,zeta,zeta_rhs,zeta_lop,zeta_res,phi1,
+     &                    phi4_r,phi4_i,phi4_r_t,phi4_i_t,
      &                    L,cmask,phys_bdy,chr,ex,x,y,norm,Nx,Ny)
         implicit none
         integer Nx,Ny,action
@@ -22,6 +23,8 @@ c-----------------------------------------------------------------------
         real*8 zeta(Nx,Ny),zeta_rhs(Nx,Ny),zeta_lop(Nx,Ny)
         real*8 zeta_res(Nx,Ny)
         real*8 phi1(Nx,Ny)
+        real*8 phi4_r(Nx,Ny),phi4_i(Nx,Ny)
+        real*8 phi4_r_t(Nx,Ny),phi4_i_t(Nx,Ny)
         real*8 cmask(Nx,Ny),chr(Nx,Ny)
         real*8 x(Nx),y(Ny),norm,ex,L
         real*8 trhoE_grad,trhoE_ptl,alphasq
@@ -29,6 +32,8 @@ c-----------------------------------------------------------------------
         real*8 phi1_x(5),ddphi1,ddphi1_Jac,grad_phi1_sq
 
         real*8 phi10(Nx,Ny)
+        real*8 phi4r0(Nx,Ny),phi4i0(Nx,Ny)
+        real*8 phi4rt0(Nx,Ny),phi4it0(Nx,Ny)
 
         real*8 g_ll(5,5)
 
@@ -39,11 +44,13 @@ c-----------------------------------------------------------------------
 
         real*8 zeta0
         real*8 phi10_0
+        real*8 phi4r0_0,phi4i0_0
+        real*8 phi4rt0_0,phi4it0_0
 
         !--------------------------------------------------------------
         ! potential
         !--------------------------------------------------------------
-        real*8 V0
+        real*8 V1,V4
 
         real*8 Jac,res,rhs,new_rhs
         real*8 lambda5
@@ -72,9 +79,6 @@ c-----------------------------------------------------------------------
         data h,dx,dy/0.0,0.0,0.0/
 
         data zeta0/0.0/
-        data phi10_0/0.0/
-
-        data V0/0.0/
 
         data Jac,res,rhs,new_rhs/0.0,0.0,0.0,0.0/
         data lambda5/0.0/
@@ -103,14 +107,18 @@ c-----------------------------------------------------------------------
         ! sets AdS5D cosmological constant
         lambda5=-6/L/L
 
-        ! manually reconstruct phi10=phi1*(1-rho^2)^4
+        ! manually reconstruct phi10=phi1*(1-rho^2)^4, 
+        ! phi4r0=phi4_r*(1-rho^2)^4, phi4i0=phi4_i*(1-rho^2)^4
         do i=1,Nx
           do j=1,Ny
             x0=x(i)
             y0=y(j)
             rho0=sqrt(x0**2+y0**2)
-            if (phi1(i,j).ne.0) phi10(i,j)=phi1(i,j)*(1-rho0**2)**4
-            if (phi1(i,j).eq.0) phi10(i,j)=0
+            phi10(i,j)=phi1(i,j)*(1-rho0**2)**4
+            phi4r0(i,j)=phi4_r(i,j)*(1-rho0**2)**4
+            phi4i0(i,j)=phi4_i(i,j)*(1-rho0**2)**4
+            phi4rt0(i,j)=phi4_r_t(i,j)*(1-rho0**2)**4
+            phi4it0(i,j)=phi4_i_t(i,j)*(1-rho0**2)**4
           end do
         end do
 
@@ -139,11 +147,16 @@ c-----------------------------------------------------------------------
                 ! fill in zeta 
                 zeta0=zeta(i,j)
 
-                ! fill in phi10_0
+                ! fill in phi10_0, phi4r0_0, phi4i0_0
                 phi10_0=phi10(i,j)
+                phi4r0_0=phi4r0(i,j)
+                phi4i0_0=phi4i0(i,j)
+                phi4rt0_0=phi4rt0(i,j)
+                phi4it0_0=phi4it0(i,j)
 
-                ! fill in V0
-                V0=2.5d0*phi10_0**2
+                ! fill in V1,V4
+                V1=2.5d0*phi10_0**2 !HB: add m1sq,m4sq
+                V4=1.0d0*(phi4r0_0**2+phi4i0_0**2)
 
                 ! computes initial energy density at i,j, with initial data
                 ! time-symmetric so phi_t=0, and free scalar so V(phi)=0
@@ -151,7 +164,7 @@ c-----------------------------------------------------------------------
      &                      grad_phi1_sq,
      &                      x,y,i,j,chr,L,ex,Nx,Ny)
                 trhoE_grad=grad_phi1_sq/2
-                trhoE_ptl=V0
+                trhoE_ptl=V1
 
                 ! computes normal residual L.zeta
                 !(NOTE: the physical energy density rhoE is such that

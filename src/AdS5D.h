@@ -340,7 +340,8 @@ void gu_calc_(real *gb_tt, real *gb_tx, real *gb_ty, real *gb_xx,
               real *gu_xy, real *gu_yy, 
               real *m_g_det, real *chr, real *ex, int *Nx, int *Ny);
 
-void mg_sup_(int *action, real *zeta, real *zeta_rhs, real *zeta_lop, real *zeta_res, real *phi1, 
+void mg_sup_(int *action, real *zeta, real *zeta_rhs, real *zeta_lop, real *zeta_res, real *phi1,
+             real *phi4_r, real *phi4_i, real *phi4_r_t, real *phi4_i_t,
              real *AdS_L, real *cmask, int *phys_bdy, real *chr, real *ex, 
              real *x, real *y, real *norm, int *Nx, int *Ny);
 

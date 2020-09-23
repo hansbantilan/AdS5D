@@ -2023,6 +2023,7 @@ real AdS5D_MG_residual(void)
 
    // solves for zeta conformal factor at t=0; residual 
    mg_sup_(&action,zeta,zeta_rhs,zeta_lop,zeta_res,phi1,
+           phi4_r,phi4_i,phi4_r_t,phi4_i_t,
            &AdS_L,mask_mg,phys_bdy,chr_mg,&AMRD_ex, 
            x,y,&norm,&Nx,&Ny);
 
@@ -2049,6 +2050,7 @@ real AdS5D_MG_relax(void)
 
    // solves for zeta conformal factor at t=0; relaxation 
    mg_sup_(&action,zeta,zeta_rhs,zeta_lop,zeta_res,phi1,
+           phi4_r,phi4_i,phi4_r_t,phi4_i_t,
            &AdS_L,mask_mg,phys_bdy,chr_mg,&AMRD_ex,
            x,y,&norm,&Nx,&Ny);
 
@@ -2075,6 +2077,7 @@ void AdS5D_L_op(void)
 
    // solves for zeta conformal factor at t=0; elliptic operator
    mg_sup_(&action,zeta,zeta_rhs,zeta_lop,zeta_res,phi1,
+           phi4_r,phi4_i,phi4_r_t,phi4_i_t,
            &AdS_L,mask_mg,phys_bdy,chr_mg,&AMRD_ex,
            x,y,&norm,&Nx,&Ny);
 
