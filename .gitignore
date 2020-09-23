@@ -1,0 +1,3 @@
+rtfiles/
+src/*.o
+src/*_.c
