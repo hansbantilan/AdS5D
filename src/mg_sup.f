@@ -30,6 +30,8 @@ c-----------------------------------------------------------------------
         real*8 trhoE_grad,trhoE_ptl,alphasq
         real*8 zeta_x(5),ddzeta,ddzeta_Jac,grad_zeta_sq
         real*8 phi1_x(5),ddphi1,ddphi1_Jac,grad_phi1_sq
+        real*8 phi4_r_x(5),ddphi4_r,ddphi4_r_Jac,grad_phi4_r_sq
+        real*8 phi4_i_x(5),ddphi4_i,ddphi4_i_Jac,grad_phi4_i_sq
 
         real*8 phi10(Nx,Ny)
         real*8 phi4r0(Nx,Ny),phi4i0(Nx,Ny)
@@ -163,8 +165,15 @@ c-----------------------------------------------------------------------
                 call df_int(phi10,phi1_x,ddphi1,ddphi1_Jac,
      &                      grad_phi1_sq,
      &                      x,y,i,j,chr,L,ex,Nx,Ny)
+                call df_int(phi4r0,phi4_r_x,ddphi4_r,ddphi4_r_Jac,
+     &                      grad_phi4_r_sq,
+     &                      x,y,i,j,chr,L,ex,Nx,Ny)
+                call df_int(phi4i0,phi4_i_x,ddphi4_i,ddphi4_i_Jac,
+     &                      grad_phi4_i_sq,
+     &                      x,y,i,j,chr,L,ex,Nx,Ny)
                 trhoE_grad=grad_phi1_sq/2
-                trhoE_ptl=V1
+     &                    +grad_phi4_r_sq/2+grad_phi4_i_sq/2
+                trhoE_ptl=V1+V4
 
                 ! computes normal residual L.zeta
                 !(NOTE: the physical energy density rhoE is such that
