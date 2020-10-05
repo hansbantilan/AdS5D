@@ -171,8 +171,8 @@ c-----------------------------------------------------------------------
                 call df_int(phi4i0,phi4_i_x,ddphi4_i,ddphi4_i_Jac,
      &                      grad_phi4_i_sq,
      &                      x,y,i,j,chr,L,ex,Nx,Ny)
-                trhoE_grad=grad_phi1_sq/2
-     &                    +grad_phi4_r_sq/2+grad_phi4_i_sq/2
+                trhoE_grad=grad_phi1_sq
+     &                    +grad_phi4_r_sq+grad_phi4_i_sq
                 trhoE_ptl=V1+V4
 
                 ! computes normal residual L.zeta

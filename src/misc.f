@@ -3105,8 +3105,8 @@ c----------------------------------------------------------------------
         do a=1,5
           do b=1,5
             set_ll(a,b)=
-     &            phi10_x(a)*phi10_x(b)
-     &           -g0_ll(a,b)*(grad_phi1_sq/2+V1)
+     &           2*phi10_x(a)*phi10_x(b)
+     &           -g0_ll(a,b)*(grad_phi1_sq+V1)
      &           +phi4r0_x(a)*phi4r0_x(b) 
      &           +phi4i0_x(a)*phi4i0_x(b)
      &           -g0_ll(a,b)*(grad_phi4r_sq+grad_phi4i_sq+V4)
